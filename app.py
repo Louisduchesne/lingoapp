@@ -8,7 +8,7 @@ from gtts import gTTS
 import io
 
 # ==========================================
-# CONFIGURATION ET DESIGN RESPONSIVE (MOBILE)
+# CONFIGURATION ET DESIGN RESPONSIVE
 # ==========================================
 st.set_page_config(page_title="LingoApp", page_icon="🎓", layout="wide")
 
@@ -18,113 +18,22 @@ def appliquer_style_moderne():
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800;900&display=swap');
-        
-        html, body, [class*="css"] { 
-            font-family: 'Nunito', sans-serif !important; 
-        }
-        
-        .stApp { 
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); 
-            padding: 0px !important;
-        }
-
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 2rem !important;
-            padding-left: 0.8rem !important;
-            padding-right: 0.8rem !important;
-            max-width: 100% !important;
-        }
-
+        html, body, [class*="css"] { font-family: 'Nunito', sans-serif !important; }
+        .stApp { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); padding: 0px !important; }
+        .block-container { padding-top: 1rem !important; padding-bottom: 2rem !important; padding-left: 0.8rem !important; padding-right: 0.8rem !important; max-width: 100% !important; }
         h1 { font-size: 1.8rem !important; font-weight: 900 !important; color: #1e293b !important; margin-bottom: 0.5rem !important; }
-        h2 { font-size: 1.4rem !important; color: #1e293b !important; }
-        h3 { font-size: 1.2rem !important; color: #1e293b !important; }
         p, span, label, li { color: #334155 !important; font-size: 1rem !important; }
-
-        div[role="radiogroup"] {
-            background: rgba(255, 255, 255, 0.85) !important;
-            border-radius: 16px !important;
-            padding: 5px !important;
-            display: flex !important;
-            flex-direction: row !important;
-            justify-content: space-between !important;
-            gap: 2px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-            backdrop-filter: blur(10px);
-            margin-bottom: 1rem !important;
-        }
-        
-        div[role="radiogroup"] label {
-            flex: 1 1 auto !important;
-            text-align: center !important;
-            background: transparent !important;
-            border-radius: 12px !important;
-            padding: 8px 4px !important;
-            margin: 0 !important;
-            border: none !important;
-        }
-        
-        div[role="radiogroup"] label[data-checked="true"] {
-            background: #ffffff !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
-        }
-
-        .stButton>button {
-            border-radius: 16px !important; 
-            font-weight: 800 !important; 
-            font-size: 1.05rem !important;
-            padding: 12px 20px !important;
-            min-height: 52px !important;
-            width: 100% !important;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.9) !important;
-            background-color: #ffffff !important; 
-            color: #1e293b !important;
-        }
-        
-        .stButton>button[kind="primary"], div[data-testid="stForm"] button {
-            background: linear-gradient(135deg, #ff5f6d 0%, #ff2a4b 100%) !important; 
-            color: white !important; 
-            border: none !important;
-            box-shadow: 0 4px 15px rgba(255, 42, 75, 0.3) !important;
-        }
-
-        [data-testid="stForm"], div[data-testid="stExpander"] {
-            background-color: rgba(255, 255, 255, 0.8) !important; 
-            border-radius: 20px !important;
-            padding: 18px !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: blur(12px);
-        }
-
-        .stTextInput>div>div>input, .stNumberInput>div>div>input, select {
-            border-radius: 14px !important; 
-            color: #0f172a !important; 
-            background-color: #ffffff !important; 
-            border: 1px solid #cbd5e1 !important;
-            font-size: 1.1rem !important;
-            padding: 12px !important;
-            height: 48px !important;
-        }
-        
+        div[role="radiogroup"] { background: rgba(255, 255, 255, 0.85) !important; border-radius: 16px !important; padding: 5px !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; margin-bottom: 1rem !important; }
+        div[role="radiogroup"] label { flex: 1 1 auto !important; text-align: center !important; padding: 8px 4px !important; border-radius: 12px !important; margin: 0 !important; border: none !important; background: transparent !important; }
+        div[role="radiogroup"] label[data-checked="true"] { background: #ffffff !important; box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important; }
+        .stButton>button { border-radius: 16px !important; font-weight: 800 !important; font-size: 1.05rem !important; padding: 12px 20px !important; min-height: 52px !important; width: 100% !important; background-color: #ffffff !important; color: #1e293b !important; border: 1px solid rgba(255, 255, 255, 0.9) !important; }
+        .stButton>button[kind="primary"], div[data-testid="stForm"] button { background: linear-gradient(135deg, #ff5f6d 0%, #ff2a4b 100%) !important; color: white !important; border: none !important; }
+        [data-testid="stForm"], div[data-testid="stExpander"] { background-color: rgba(255, 255, 255, 0.8) !important; border-radius: 20px !important; padding: 18px !important; box-shadow: 0 8px 25px rgba(0,0,0,0.05) !important; border: 1px solid rgba(255, 255, 255, 0.8) !important; backdrop-filter: blur(12px); }
+        .stTextInput>div>div>input, .stNumberInput>div>div>input, select { border-radius: 14px !important; color: #0f172a !important; background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; font-size: 1.1rem !important; height: 48px !important; padding: 12px !important; }
         .stTabs [data-baseweb="tab-list"] { gap: 10px !important; }
-        .stTabs [data-baseweb="tab"] { 
-            border-radius: 12px 12px 0 0 !important; 
-            background-color: rgba(255,255,255,0.5) !important; 
-            font-weight: 700 !important;
-            padding: 10px 16px !important;
-        }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { 
-            background-color: #ffffff !important; 
-        }
-
-        div[data-testid="stDataFrame"] {
-            background: white !important;
-            border-radius: 16px !important;
-            padding: 5px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
-        }
+        .stTabs [data-baseweb="tab"] { border-radius: 12px 12px 0 0 !important; background-color: rgba(255,255,255,0.5) !important; font-weight: 700 !important; padding: 10px 16px !important; }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #ffffff !important; }
+        div[data-testid="stDataFrame"] { background: white !important; border-radius: 16px !important; padding: 5px !important; box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important; }
     </style>
     """, unsafe_allow_html=True)
 
@@ -153,6 +62,10 @@ def obtenir_picto_cat(cat_nom):
     elif "corps" in nom: icon = "🧠"
     elif "ville" in nom: icon = "🏙️"
     elif "nature" in nom: icon = "🌿"
+    elif "autre" in nom: icon = "📦"
+    elif "préposition" in nom or "preposition" in nom: icon = "🔗"
+    elif "verbe" in nom: icon = "⚡"
+    elif "toiec" in nom or "toeic" in nom: icon = "🎓"
     else: icon = "🏷️"
     return f"{icon} {cat_nom}"
 
@@ -161,9 +74,6 @@ CORRECTIONS = {
     'machoire': 'mâchoire', 'bell peper': 'bell pepper', 'zuchini': 'zucchini', 'chadelle': 'chandelle', 'chuchotter': 'chuchoter'
 }
 
-# ==========================================
-# FONCTIONS OUTILS ET BASES DE DONNÉES
-# ==========================================
 def charger_comptes():
     if os.path.exists(FICHIER_COMPTES): return pd.read_csv(FICHIER_COMPTES).astype(str)
     return pd.DataFrame(columns=['pseudo', 'mot_de_passe'])
@@ -229,9 +139,17 @@ def calculer_pourcentage(row):
     return round((points / total_tentatives) * 100, 1)
 
 # ==========================================
-# INITIALISATION DE SESSION
+# RÉSOLUTION CONNEXION PERMANENTE PAR URL
 # ==========================================
-if 'utilisateur_connecte' not in st.session_state: st.session_state.utilisateur_connecte = None
+query_user = st.query_params.get("u", None)
+
+if 'utilisateur_connecte' not in st.session_state:
+    if query_user:
+        st.session_state.utilisateur_connecte = query_user
+        st.session_state.vocabulaire = preparer_base_globale(query_user)
+    else:
+        st.session_state.utilisateur_connecte = None
+
 if 'mot_actuel' not in st.session_state: st.session_state.mot_actuel = None
 if 'test_etape' not in st.session_state: st.session_state.test_etape = "config"
 if 'entrainement_etat' not in st.session_state: st.session_state.entrainement_etat = "attente"
@@ -258,6 +176,10 @@ if st.session_state.utilisateur_connecte is None:
                         vrai_pseudo = match.iloc[0]['pseudo']
                         st.session_state.utilisateur_connecte = vrai_pseudo
                         st.session_state.vocabulaire = preparer_base_globale(vrai_pseudo)
+                        
+                        # Mémoriser dans l'URL du navigateur
+                        st.query_params["u"] = vrai_pseudo
+                        
                         st.session_state.test_etape = "config"
                         st.session_state.entrainement_etat = "attente"
                         st.rerun()
@@ -286,6 +208,7 @@ col_profil, col_logout = st.columns([3, 1])
 with col_profil: st.markdown(f"**👤 {st.session_state.utilisateur_connecte}**")
 with col_logout:
     if st.button("🚪 Quitter", use_container_width=True):
+        st.query_params.clear()
         st.session_state.utilisateur_connecte = None
         st.session_state.vocabulaire = None
         st.rerun()
@@ -472,7 +395,7 @@ elif menu == "⏱️ Test":
             st.rerun()
 
 # ==========================================
-# PAGE 3 : DICTIONNAIRE (CORRIGÉ)
+# PAGE 3 : DICTIONNAIRE
 # ==========================================
 elif menu == "📖 Dict.":
     st.title("📖 Dictionnaire")
@@ -480,10 +403,8 @@ elif menu == "📖 Dict.":
     st.session_state.entrainement_etat = "attente"
     
     col_l1, col_l2 = st.columns(2)
-    with col_l1:
-        lang_1 = st.selectbox("Langue 1 :", list(LANGUES_AFFICHAGE.values()), index=0)
-    with col_l2:
-        lang_2 = st.selectbox("Langue 2 :", list(LANGUES_AFFICHAGE.values()), index=1)
+    with col_l1: lang_1 = st.selectbox("Langue 1 :", list(LANGUES_AFFICHAGE.values()), index=0)
+    with col_l2: lang_2 = st.selectbox("Langue 2 :", list(LANGUES_AFFICHAGE.values()), index=1)
         
     code_l1 = INVERS_AFFICHAGE[lang_1]
     code_l2 = INVERS_AFFICHAGE[lang_2]
@@ -505,18 +426,12 @@ elif menu == "📖 Dict.":
         
     st.caption(f"**{len(df_dic)} mot(s) trouvé(s)**")
     
-    # On trie d'abord, PUIS on met les pictogrammes et on renomme les colonnes
     df_dic = df_dic.sort_values(by=code_l1)
     df_dic['Categorie'] = df_dic['Categorie'].apply(obtenir_picto_cat)
     cols_a_afficher = ['Categorie', code_l1, code_l2, 'Pourcentage']
-    
     df_final = df_dic[cols_a_afficher].rename(columns={code_l1: lang_1, code_l2: lang_2})
     
-    st.dataframe(
-        df_final,
-        use_container_width=True,
-        hide_index=True
-    )
+    st.dataframe(df_final, use_container_width=True, hide_index=True)
 
 # ==========================================
 # PAGE 4 : SCORES
@@ -528,10 +443,8 @@ elif menu == "📊 Scores":
     
     st.write("### 🌐 Choisir les langues à consulter")
     col_s1, col_s2 = st.columns(2)
-    with col_s1:
-        s_lang1 = st.selectbox("Langue principale :", list(LANGUES_AFFICHAGE.values()), index=0, key="score_l1")
-    with col_s2:
-        s_lang2 = st.selectbox("Deuxième langue :", list(LANGUES_AFFICHAGE.values()), index=1, key="score_l2")
+    with col_s1: s_lang1 = st.selectbox("Langue principale :", list(LANGUES_AFFICHAGE.values()), index=0, key="score_l1")
+    with col_s2: s_lang2 = st.selectbox("Deuxième langue :", list(LANGUES_AFFICHAGE.values()), index=1, key="score_l2")
         
     code_s1 = INVERS_AFFICHAGE[s_lang1]
     code_s2 = INVERS_AFFICHAGE[s_lang2]
@@ -555,14 +468,9 @@ elif menu == "📊 Scores":
     
     df_affichage = df_scores[['Categorie', code_s1, code_s2, 'Score_100', 'Score_50', 'Score_0', 'Pourcentage']].sort_values(by='Pourcentage', ascending=False)
     df_affichage['Categorie'] = df_affichage['Categorie'].apply(obtenir_picto_cat)
-    
     df_affichage = df_affichage.rename(columns={
-        code_s1: s_lang1,
-        code_s2: s_lang2,
-        'Score_100': '✅ Réussi',
-        'Score_50': '⚠️ Moyen',
-        'Score_0': '❌ Erreurs',
-        'Pourcentage': 'Score (%)'
+        code_s1: s_lang1, code_s2: s_lang2,
+        'Score_100': '✅ Réussi', 'Score_50': '⚠️ Moyen', 'Score_0': '❌ Erreurs', 'Pourcentage': 'Score (%)'
     })
     
     st.dataframe(df_affichage, use_container_width=True, hide_index=True)
@@ -607,19 +515,9 @@ elif menu == "⚙️ Gérer":
     st.write("**✏️ Modifier la base :**")
     
     voir_tout = st.checkbox("🔍 Afficher toutes les langues (Espagnol, Italien, Allemand)", value=False)
-    
-    if voir_tout:
-        cols_edition = ['Categorie'] + LANGUES_COLS + ['Pourcentage']
-    else:
-        cols_edition = ['Categorie', 'Francais', 'Anglais', 'Pourcentage']
+    cols_edition = ['Categorie'] + LANGUES_COLS + ['Pourcentage'] if voir_tout else ['Categorie', 'Francais', 'Anglais', 'Pourcentage']
         
-    df_modifie = st.data_editor(
-        st.session_state.vocabulaire,
-        column_order=cols_edition,
-        num_rows="dynamic",
-        use_container_width=True,
-        hide_index=True
-    )
+    df_modifie = st.data_editor(st.session_state.vocabulaire, column_order=cols_edition, num_rows="dynamic", use_container_width=True, hide_index=True)
     
     if st.button("💾 Enregistrer les modifications", type="primary", use_container_width=True):
         st.session_state.vocabulaire = df_modifie
