@@ -129,8 +129,24 @@ def calculer_pourcentage(row):
 
 
 # ==========================================
-# GESTION DE L'IDENTIFICATION SANS MOT DE PASSE
+# GESTION DE L'IDENTIFICATION ET DU STOCKAGE NAVIGATEUR
 # ==========================================
+st.components.v1.html("""
+<script>
+    const params = new URLSearchParams(window.location.search);
+    let u = params.get('u');
+    if (u) {
+        localStorage.setItem('lingo_user', u);
+    } else {
+        let storedUser = localStorage.getItem('lingo_user');
+        if (storedUser) {
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?u=' + storedUser;
+            window.location.href = newUrl;
+        }
+    }
+</script>
+""", height=0)
+
 query_user = st.query_params.get("u", None)
 
 if not query_user:
@@ -165,6 +181,7 @@ col_profil, col_logout = st.columns([3, 1])
 with col_profil: st.markdown(f"**👤 Profil de {st.session_state.utilisateur_connecte}**")
 with col_logout:
     if st.button("🚪 Changer", use_container_width=True):
+        st.components.v1.html("<script>localStorage.removeItem('lingo_user');</script>", height=0)
         st.query_params.clear()
         st.session_state.utilisateur_connecte = None
         st.session_state.vocabulaire = None
@@ -442,7 +459,7 @@ elif menu == "⚙️ Gérer":
     
     # Bouton magique de mise à jour depuis l'Excel
     st.write("### 🔄 Mettre à jour depuis GitHub")
-    st.write("Si tu as modifié ton fichier Excel sur ton ordinateur et que tu l'as mis sur GitHub, clique ici pour charger les nouveaux mots. *(Note : cela remet tes scores à zéro pour reprendre sur une base propre !)*")
+    st.write("Si tu as modified ton fichier Excel sur ton ordinateur et que tu l'as mis sur GitHub, clique ici pour charger les nouveaux mots. *(Note : cela remet tes scores à zéro pour reprendre sur une base propre !)*")
     if st.button("⚠️ Recharger le fichier Excel", type="primary", use_container_width=True):
         fichier_profil = obtenir_nom_fichier(st.session_state.utilisateur_connecte)
         if os.path.exists(fichier_profil):
