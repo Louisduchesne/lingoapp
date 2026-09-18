@@ -40,7 +40,6 @@ def appliquer_style_moderne():
 appliquer_style_moderne()
 
 FICHIER_EXCEL = "Vocabulaire d'anglais à connaitre .xlsx"
-FICHIER_COMPTES = "comptes_utilisateurs.csv"
 LANGUES_COLS = ["Francais", "Anglais", "Espagnol", "Italien", "Allemand"]
 LANGUES_AFFICHAGE = {"Francais": "🥖 Français", "Anglais": "☕ Anglais", "Espagnol": "💃 Espagnol", "Italien": "🍕 Italien", "Allemand": "🥨 Allemand"}
 CODES_AUDIO = {"Francais": "fr", "Anglais": "en", "Espagnol": "es", "Italien": "it", "Allemand": "de"}
@@ -73,16 +72,6 @@ CORRECTIONS = {
     'crouch': 'couch', 'écureil': 'écureuil', 'attérir': 'atterrir',
     'machoire': 'mâchoire', 'bell peper': 'bell pepper', 'zuchini': 'zucchini', 'chadelle': 'chandelle', 'chuchotter': 'chuchoter'
 }
-
-def charger_comptes():
-    if os.path.exists(FICHIER_COMPTES): return pd.read_csv(FICHIER_COMPTES).astype(str)
-    return pd.DataFrame(columns=['pseudo', 'mot_de_passe'])
-
-def ajouter_compte(pseudo, mdp):
-    df = charger_comptes()
-    nouveau = pd.DataFrame([{'pseudo': str(pseudo), 'mot_de_passe': str(mdp)}])
-    df = pd.concat([df, nouveau], ignore_index=True)
-    df.to_csv(FICHIER_COMPTES, index=False)
 
 def obtenir_nom_fichier(utilisateur):
     nom_propre = "".join(x for x in utilisateur if x.isalnum()).lower()
@@ -138,76 +127,44 @@ def calculer_pourcentage(row):
     points = (row['Score_100'] * 1.0) + (row['Score_50'] * 0.5)
     return round((points / total_tentatives) * 100, 1)
 
+
 # ==========================================
-# RÉSOLUTION CONNEXION PERMANENTE PAR URL
+# GESTION DE L'IDENTIFICATION SANS MOT DE PASSE
 # ==========================================
 query_user = st.query_params.get("u", None)
 
-if 'utilisateur_connecte' not in st.session_state:
-    if query_user:
-        st.session_state.utilisateur_connecte = query_user
-        st.session_state.vocabulaire = preparer_base_globale(query_user)
-    else:
-        st.session_state.utilisateur_connecte = None
+if not query_user:
+    st.markdown("<h1 style='text-align: center;'>🎓 LingoApp</h1>", unsafe_allow_html=True)
+    st.write("---")
+    st.write("### 👋 Bienvenue !")
+    st.write("Aucun mot de passe n'est requis. Pour ne pas mélanger tes scores avec les autres, entre simplement ton prénom ci-dessous :")
+    
+    with st.form("form_login"):
+        pseudo_input = st.text_input("👤 Ton prénom :").strip()
+        if st.form_submit_button("C'est parti ! 🚀", type="primary", use_container_width=True):
+            if pseudo_input:
+                st.query_params["u"] = pseudo_input
+                st.rerun()
+            else:
+                st.warning("Merci d'entrer un prénom.")
+    st.stop()
+
+# Si l'utilisateur est présent dans l'URL
+if 'utilisateur_connecte' not in st.session_state or st.session_state.utilisateur_connecte != query_user:
+    st.session_state.utilisateur_connecte = query_user
+    st.session_state.vocabulaire = preparer_base_globale(query_user)
 
 if 'mot_actuel' not in st.session_state: st.session_state.mot_actuel = None
 if 'test_etape' not in st.session_state: st.session_state.test_etape = "config"
 if 'entrainement_etat' not in st.session_state: st.session_state.entrainement_etat = "attente"
 
 # ==========================================
-# PAGE DE CONNEXION / INSCRIPTION
-# ==========================================
-if st.session_state.utilisateur_connecte is None:
-    st.markdown("<h1 style='text-align: center;'>🎓 LingoApp</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center;'>Votre application de vocabulaire</p>", unsafe_allow_html=True)
-    st.write("---")
-    
-    tab_connexion, tab_inscription = st.tabs(["🔑 Connexion", "✨ Créer un compte"])
-    
-    with tab_connexion:
-        with st.form("form_connexion"):
-            pseudo = st.text_input("👤 Votre pseudo :").strip()
-            mdp = st.text_input("🔒 Votre mot de passe :", type="password").strip()
-            if st.form_submit_button("Se connecter 🚀", type="primary", use_container_width=True):
-                if pseudo and mdp:
-                    df_comptes = charger_comptes()
-                    match = df_comptes[(df_comptes['pseudo'].str.lower() == pseudo.lower()) & (df_comptes['mot_de_passe'] == mdp)]
-                    if not match.empty:
-                        vrai_pseudo = match.iloc[0]['pseudo']
-                        st.session_state.utilisateur_connecte = vrai_pseudo
-                        st.session_state.vocabulaire = preparer_base_globale(vrai_pseudo)
-                        
-                        # Mémoriser dans l'URL du navigateur
-                        st.query_params["u"] = vrai_pseudo
-                        
-                        st.session_state.test_etape = "config"
-                        st.session_state.entrainement_etat = "attente"
-                        st.rerun()
-                    else: st.error("Pseudo ou mot de passe incorrect.")
-                else: st.warning("Veuillez remplir tous les champs.")
-
-    with tab_inscription:
-        with st.form("form_inscription"):
-            nv_pseudo = st.text_input("👤 Choisissez un pseudo :").strip()
-            nv_mdp = st.text_input("🔒 Choisissez un mot de passe :", type="password").strip()
-            if st.form_submit_button("Créer mon compte", type="primary", use_container_width=True):
-                if nv_pseudo and nv_mdp:
-                    df_comptes = charger_comptes()
-                    if nv_pseudo.lower() in df_comptes['pseudo'].str.lower().values:
-                        st.error("Ce pseudo existe déjà.")
-                    else:
-                        ajouter_compte(nv_pseudo, nv_mdp)
-                        st.success("Compte créé ! Connectez-vous.")
-                else: st.warning("Veuillez remplir tous les champs.")
-    st.stop()
-
-# ==========================================
 # HEADER ET NAVIGATION (UTILISATEUR CONNECTÉ)
 # ==========================================
 col_profil, col_logout = st.columns([3, 1])
-with col_profil: st.markdown(f"**👤 {st.session_state.utilisateur_connecte}**")
+with col_profil: st.markdown(f"**👤 Profil de {st.session_state.utilisateur_connecte}**")
 with col_logout:
-    if st.button("🚪 Quitter", use_container_width=True):
+    if st.button("🚪 Changer", use_container_width=True):
         st.query_params.clear()
         st.session_state.utilisateur_connecte = None
         st.session_state.vocabulaire = None
@@ -476,34 +433,41 @@ elif menu == "📊 Scores":
     st.dataframe(df_affichage, use_container_width=True, hide_index=True)
 
 # ==========================================
-# PAGE 5 : GESTION DES MOTS
+# PAGE 5 : GESTION DES MOTS ET MISES À JOUR
 # ==========================================
 elif menu == "⚙️ Gérer":
-    st.title("⚙️ Base de données")
+    st.title("⚙️ Gérer ma base")
     st.session_state.test_etape = "config"
     st.session_state.entrainement_etat = "attente"
     
+    # Bouton magique de mise à jour depuis l'Excel
+    st.write("### 🔄 Mettre à jour depuis GitHub")
+    st.write("Si tu as modifié ton fichier Excel sur ton ordinateur et que tu l'as mis sur GitHub, clique ici pour charger les nouveaux mots. *(Note : cela remet tes scores à zéro pour reprendre sur une base propre !)*")
+    if st.button("⚠️ Recharger le fichier Excel", type="primary", use_container_width=True):
+        fichier_profil = obtenir_nom_fichier(st.session_state.utilisateur_connecte)
+        if os.path.exists(fichier_profil):
+            os.remove(fichier_profil) # On supprime l'ancien historique
+        st.session_state.vocabulaire = preparer_base_globale(st.session_state.utilisateur_connecte) # On recrée depuis l'Excel
+        st.success("Ta base a été réinitialisée avec succès avec le nouveau fichier Excel !")
+        st.rerun()
+
+    st.write("---")
+    
     with st.form("form_ajout", clear_on_submit=True):
-        st.write("**➕ Ajouter un mot :**")
+        st.write("### ➕ Ajouter un mot manuellement")
         col1, col2 = st.columns(2)
         with col1: nv_francais = st.text_input("Français*")
         with col2: nv_anglais = st.text_input("Anglais*")
-        
-        st.write("**Autres langues (optionnel) :**")
-        col3, col4, col5 = st.columns(3)
-        with col3: nv_esp = st.text_input("Espagnol")
-        with col4: nv_ita = st.text_input("Italien")
-        with col5: nv_all = st.text_input("Allemand")
         
         cats = sorted([str(c) for c in st.session_state.vocabulaire['Categorie'].unique() if pd.notna(c) and c != ""])
         choix_cat = st.selectbox("Catégorie*", cats + ["✨ NOUVELLE..."])
         nv_categorie = st.text_input("Nom de la catégorie :") if choix_cat == "✨ NOUVELLE..." else choix_cat
             
-        if st.form_submit_button("✅ Ajouter le mot", type="primary", use_container_width=True):
+        if st.form_submit_button("✅ Ajouter le mot", use_container_width=True):
             if nv_francais and nv_anglais and nv_categorie:
                 nouveau_mot = pd.DataFrame([{
                     'Categorie': nv_categorie, 'Francais': nv_francais, 'Anglais': nv_anglais, 
-                    'Espagnol': nv_esp or None, 'Italien': nv_ita or None, 'Allemand': nv_all or None,
+                    'Espagnol': None, 'Italien': None, 'Allemand': None,
                     'Score_100': 0, 'Score_50': 0, 'Score_0': 0, 'Pourcentage': 0.0
                 }])
                 st.session_state.vocabulaire = pd.concat([st.session_state.vocabulaire, nouveau_mot], ignore_index=True)
@@ -512,14 +476,13 @@ elif menu == "⚙️ Gérer":
                 st.rerun()
     
     st.write("---")
-    st.write("**✏️ Modifier la base :**")
-    
+    st.write("### ✏️ Éditer la base")
     voir_tout = st.checkbox("🔍 Afficher toutes les langues (Espagnol, Italien, Allemand)", value=False)
     cols_edition = ['Categorie'] + LANGUES_COLS + ['Pourcentage'] if voir_tout else ['Categorie', 'Francais', 'Anglais', 'Pourcentage']
         
     df_modifie = st.data_editor(st.session_state.vocabulaire, column_order=cols_edition, num_rows="dynamic", use_container_width=True, hide_index=True)
     
-    if st.button("💾 Enregistrer les modifications", type="primary", use_container_width=True):
+    if st.button("💾 Enregistrer les modifications manuelles", use_container_width=True):
         st.session_state.vocabulaire = df_modifie
         sauvegarder_base()
         st.success("Modifications enregistrées !")
